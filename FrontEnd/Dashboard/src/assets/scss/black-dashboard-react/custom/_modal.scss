@@ -1,0 +1,110 @@
+// Variables for dark theme colors
+$modal-dark-bg: #333;          // Dark background color
+$modal-dark-text: rgba(255, 255, 255, 0.85); // Light text color
+$modal-dark-header: rgba(255, 255, 255, 0.9); // Light color for headers
+
+// Modals
+// Design element Dialogs
+// --------------------------------------------------
+.modal-content {
+  background-color: $modal-dark-bg; // Set default dark background
+  color: $modal-dark-text;          // Set default light text color
+  border: 0;
+
+  // Modal header
+  .modal-header {
+    border-bottom: none;
+    background-color: darken($modal-dark-bg, 5%); // Slightly darker header
+
+    & button {
+      position: absolute;
+      right: 27px;
+      top: 24px;
+      outline: 0;
+      padding: 1rem;
+      margin: -1rem -1rem -1rem auto;
+      color: lighten($modal-dark-bg, 40%); // Light close button color
+    }
+
+    .title {
+      color: $modal-dark-header;
+      margin-top: 5px;
+      margin-bottom: 0;
+    }
+
+    .modal-title {
+      color: $modal-dark-header;
+    }
+
+    i.tim-icons {
+      font-size: 16px;
+    }
+  }
+
+  // Modal body
+  .modal-body {
+    line-height: 1.9;
+    color: $modal-dark-text;
+
+    p {
+      color: $modal-dark-text;
+    }
+  }
+
+  // Footer (for actions)
+  .modal-footer {
+    border-top: 0;
+    background-color: darken($modal-dark-bg, 5%); // Slightly darker footer
+    -webkit-justify-content: space-between; /* Safari 6.1+ */
+    justify-content: space-between;
+
+    button {
+      margin: 0;
+      padding-left: 16px;
+      padding-right: 16px;
+      width: auto;
+      color: $modal-dark-text;   // Light text for footer buttons
+      background-color: darken($modal-dark-bg, 10%); // Dark button background
+
+      &.pull-left {
+        padding-left: 5px;
+        padding-right: 5px;
+        position: relative;
+        left: -5px;
+      }
+    }
+  }
+
+  .modal-body + .modal-footer {
+    padding-top: 0;
+  }
+}
+
+.modal-backdrop {
+  background: rgba(0, 0, 0, 0.8); // Darken backdrop for dark theme
+}
+
+// Specific Modal Types
+.modal {
+  &.modal-default,
+  &.modal-primary,
+  &.modal-danger,
+  &.modal-warning,
+  &.modal-success,
+  &.modal-info {
+    .modal-content {
+      background-color: $modal-dark-bg;
+      color: $modal-dark-text;
+    }
+  }
+
+  .modal-header .close {
+    color: lighten($modal-dark-bg, 40%);
+    text-shadow: none;
+
+    &:hover,
+    &:focus {
+      opacity: 1;
+    }
+  }
+}
