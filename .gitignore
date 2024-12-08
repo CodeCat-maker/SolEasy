@@ -1,7 +1,16 @@
+# Ignore all Python bytecode files
+*.pyc
+
+# Ignore all __pycache__ directories
+**/__pycache__/
+
+# Ignore the __pycache__ directory specifically in BackEnd/Utils
+BackEnd/Utils/__pycache__/
+
+# Ignore database files
 *.db
 *.db-shm
 *.db-wal
+
+# Ignore virtual environment directory
 venv/
-**/__pycache__/
-*.pyc
-*.pyi
