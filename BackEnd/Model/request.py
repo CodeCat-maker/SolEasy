@@ -8,4 +8,4 @@ class LogsRequest(BaseModel):
 class TransferRequest(BaseModel):
     sender_private_key: str
     recipient_public_key: str
-    amount: int
+    amount: float

@@ -7,9 +7,8 @@ from solders.pubkey import Pubkey
 from solana.transaction import Transaction
 from solders.system_program import transfer, TransferParams
 import json
-async_client = AsyncClient("https://api.devnet.solana.com")
 
-
+from config import *
 
 async def send_sol(sender_private_key: str, recipient_public_key: str, amount: int):
     # 使用发送者的私钥创建 Keypair
@@ -18,7 +17,7 @@ async def send_sol(sender_private_key: str, recipient_public_key: str, amount: i
     sender_pubkey = sender.pubkey()
 
 
-    async with AsyncClient("https://api.devnet.solana.com") as client:
+    async with AsyncClient(RPC_ENDPOINT) as client:
 
 
         latest_blockhash = (await client.get_latest_blockhash()).value.blockhash
@@ -28,16 +27,14 @@ async def send_sol(sender_private_key: str, recipient_public_key: str, amount: i
             TransferParams(
                 from_pubkey=sender_pubkey,
                 to_pubkey=Pubkey.from_string(recipient_public_key),
-                lamports=amount
+                lamports=int(amount * LAMPORTS_PER_SOL)
             )
         )
 
 
         transaction = Transaction(fee_payer=sender_pubkey, instructions=[instruction])
 
-
         transaction.recent_blockhash = latest_blockhash
-
 
         transaction.sign(sender)
 

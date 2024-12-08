@@ -8,8 +8,9 @@ from solana.rpc.commitment import Processed,Confirmed
 from solders.keypair import Keypair
 from solders.pubkey import Pubkey
 
-async_client = AsyncClient("https://api.devnet.solana.com")
+from config import *
 
+async_client = AsyncClient(RPC_ENDPOINT)
 
 class Account:
     def __init__(self,private_key):
