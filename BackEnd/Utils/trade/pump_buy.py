@@ -21,13 +21,14 @@ from solders.transaction import VersionedTransaction, Transaction
 from spl.token.instructions import get_associated_token_address
 import spl.token.instructions as spl_token
 
-from config import *
+import os
+
+from Utils.config.config import *
 
 from construct import Struct, Int64ul, Flag
 
-# Here and later all the discriminators are precalculated. See learning-examples/discriminator.py
-EXPECTED_DISCRIMINATOR = struct.pack("<Q", 6966180631402821399)
-TOKEN_DECIMALS = 6
+import dotenv
+
 
 class BondingCurveState:
     _STRUCT = Struct(
@@ -60,9 +61,13 @@ def calculate_pump_curve_price(curve_state: BondingCurveState) -> float:
 
     return (curve_state.virtual_sol_reserves / LAMPORTS_PER_SOL) / (curve_state.virtual_token_reserves / 10 ** TOKEN_DECIMALS)
 
-async def buy_token(mint: Pubkey, bonding_curve: Pubkey, associated_bonding_curve: Pubkey, curve_state: BondingCurveState, amount: float, slippage: float = 0.01, max_retries=5):
-    private_key = base58.b58decode(PRIVATE_KEY)
-    payer = Keypair.from_bytes(private_key)
+async def buy_token(payer_private_key: str, mint: Pubkey, bonding_curve: Pubkey, associated_bonding_curve: Pubkey, curve_state: BondingCurveState, amount: float, slippage: float = 0.01, max_retries=5):
+    payer_private_key = base58.b58decode(payer_private_key)
+    payer = Keypair.from_bytes(payer_private_key)
+    
+    dotenv.load_dotenv()
+    RPC_ENDPOINT = os.getenv("RPC_ENDPOINT")
+    
 
     async with AsyncClient(RPC_ENDPOINT) as client:
         associated_token_account = get_associated_token_address(payer.pubkey(), mint)

@@ -7,6 +7,9 @@
 # Ignore the __pycache__ directory specifically in BackEnd/Utils
 BackEnd/Utils/__pycache__/
 
+# Ignore .env file
+BackEnd/Utils/config/.env
+
 # Ignore database files
 *.db
 *.db-shm

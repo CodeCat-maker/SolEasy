@@ -7,8 +7,10 @@ from solders.pubkey import Pubkey
 from solana.transaction import Transaction
 from solders.system_program import transfer, TransferParams
 import json
+import dotenv
+import os
 
-from config import *
+from Utils.config.config import *
 
 async def send_sol(sender_private_key: str, recipient_public_key: str, amount: int):
     # 使用发送者的私钥创建 Keypair
@@ -16,6 +18,8 @@ async def send_sol(sender_private_key: str, recipient_public_key: str, amount: i
     sender = Keypair.from_base58_string(sender_private_key)
     sender_pubkey = sender.pubkey()
 
+    dotenv.load_dotenv()
+    RPC_ENDPOINT = os.getenv("RPC_ENDPOINT")
 
     async with AsyncClient(RPC_ENDPOINT) as client:
 
@@ -42,3 +46,10 @@ async def send_sol(sender_private_key: str, recipient_public_key: str, amount: i
 
         response = await client.send_transaction(serialized_tx)
         return json.loads(response.to_json())['result']
+
+async def cex_transfer(recipient_public_key: str, amount: float):
+    cex_api_key = os.getenv("CEX_API_KEY")
+    cex_api_secret = os.getenv("CEX_API_SECRET")
+    cex_api_url = os.getenv("CEX_API_URL")
+
+

@@ -23,15 +23,16 @@ from solders.transaction import VersionedTransaction
 from spl.token.instructions import get_associated_token_address
 import spl.token.instructions as spl_token
 
-from config import *
+from Utils.config.config import *
 
 # Import functions from buy.py
 from Utils.trade.pump_buy import get_pump_curve_state, calculate_pump_curve_price, buy_token, listen_for_create_transaction
 
-async def pump_buy(token_data):
-    mint = Pubkey.from_string(token_data['mint'])
-    bonding_curve = Pubkey.from_string(token_data['bondingCurve'])
-    associated_bonding_curve = Pubkey.from_string(token_data['associatedBondingCurve'])
+async def pump_buy(payer_private_key, mint, bonding_curve, associated_bonding_curve, amount, RPC_ENDPOINT):
+    payer_private_key = base58.b58decode(payer_private_key)
+    mint = Pubkey.from_string(mint)
+    bonding_curve = Pubkey.from_string(bonding_curve)
+    associated_bonding_curve = Pubkey.from_string(associated_bonding_curve)
 
     # Fetch the token price
     async with AsyncClient(RPC_ENDPOINT) as client:
@@ -40,8 +41,8 @@ async def pump_buy(token_data):
 
     print(f"Bonding curve address: {bonding_curve}")
     print(f"Token price: {token_price_sol:.10f} SOL")
-    print(f"Buying {BUY_AMOUNT:.6f} SOL worth of the new token with {BUY_SLIPPAGE*100:.1f}% slippage tolerance...")
-    buy_tx_hash = await buy_token(mint, bonding_curve, associated_bonding_curve, curve_state, BUY_AMOUNT, BUY_SLIPPAGE)
+    print(f"Buying {amount:.6f} SOL worth of the new token with {BUY_SLIPPAGE*100:.1f}% slippage tolerance...")
+    buy_tx_hash = await buy_token(payer_private_key, mint, bonding_curve, associated_bonding_curve, curve_state, amount, BUY_SLIPPAGE)
     if buy_tx_hash:
         print(f"Buy transaction successful: {buy_tx_hash}")
     else:

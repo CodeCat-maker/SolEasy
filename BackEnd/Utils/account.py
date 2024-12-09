@@ -8,23 +8,22 @@ from solana.rpc.commitment import Processed,Confirmed
 from solders.keypair import Keypair
 from solders.pubkey import Pubkey
 
-from config import *
-
-async_client = AsyncClient(RPC_ENDPOINT)
-
 class Account:
-    def __init__(self,private_key):
+    def __init__(self,private_key, RPC_ENDPOINT):
         self.private_key = Keypair.from_bytes(base58.b58decode(private_key))
         self.public_key = self.private_key.pubkey()
+        self.RPC_ENDPOINT = RPC_ENDPOINT
+        self.async_client = AsyncClient(self.RPC_ENDPOINT)
+
 
     async def get_solana_balance(self):
-        response = await async_client.get_balance(self.public_key)
+        response = await self.async_client.get_balance(self.public_key)
         sol_amount = json.loads(response.to_json())['result']['value']
         return sol_amount/1e9
 
     async def get_token_balance(self,tokenAC):
         token_mint_pubkey = Pubkey.from_string(tokenAC)
-        response = await async_client.get_token_accounts_by_owner(
+        response = await self.async_client.get_token_accounts_by_owner(
             owner=self.public_key,
             opts=TokenAccountOpts(mint=token_mint_pubkey),
             commitment=Confirmed
@@ -38,7 +37,7 @@ class Account:
 
         token_account = response['result']['value'][0]['pubkey']
         token_pubkey = Pubkey.from_string(token_account)
-        token_balance = await async_client.get_token_account_balance(token_pubkey)
+        token_balance = await self.async_client.get_token_account_balance(token_pubkey)
         token_amount = token_balance.value.ui_amount
         return token_amount
 
